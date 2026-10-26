@@ -1267,7 +1267,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * with no dip to plain in between, whether the move is along the dock, down into the grid or
      * back up again.
      */
-    private void showAmbient(int color) {
+    private void showAmbient(int color) {if (true) return;
         if (!ambientShown) {
             setAmbient(color);
             ambient.animate().alpha(1f).setDuration(reducedMotion ? 160 : 600)
