@@ -135,6 +135,7 @@ public class AzanOverlay extends Service {
             audio.requestAudioFocus(focus);
         }
         try {
+            try { audio.setStreamVolume(AudioManager.STREAM_MUSIC, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 20 / 100, 0); } catch (Exception ignored) { }
             player = new MediaPlayer();
             player.setAudioAttributes(attrs);
             player.setDataSource(sound.getPath());
