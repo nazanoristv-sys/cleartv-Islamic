@@ -102,7 +102,6 @@ final class Azan {
         }
         try {
             
-            try { android.media.AudioManager am = (android.media.AudioManager) ctx.getSystemService(android.content.Context.AUDIO_SERVICE); am.setStreamVolume(android.media.AudioManager.STREAM_MUSIC, am.getStreamMaxVolume(android.media.AudioManager.STREAM_MUSIC) * 50 / 100, 0); } catch (Exception ignored) { }
             player = new MediaPlayer();
             player.setAudioAttributes(new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
