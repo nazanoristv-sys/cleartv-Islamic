@@ -51,7 +51,7 @@ final class PlaceWallpapers {
             + "|kayakers?|soldiers?|guards?|vendors?|shoppers?|players?|fans)\\b", Pattern.CASE_INSENSITIVE);
 
     /** Raised whenever the rules for which pictures are kept change. */
-    private static final int RULES = 2;
+    private static final int RULES = 3;
 
     private PlaceWallpapers() {
     }
@@ -94,10 +94,16 @@ final class PlaceWallpapers {
             deleteAll(fresh);
             if (!fresh.mkdirs()) return false;
             int n = 0;
+            String pkey = pixabayKey(ctx);
+            java.util.List<String> urls = pkey == null ? null : pixabayUrls(pkey);
             for (int i = 0; i < 80 && n < 50; i++) {
                 byte[] jpg;
                 try {
-                    jpg = get("https://picsum.photos/1920/1080?random=" + System.nanoTime(), 3 * 1024 * 1024);
+                    String u = urls == null || urls.isEmpty()
+                            ? "https://picsum.photos/1920/1080?random=" + System.nanoTime()
+                            : i < urls.size() ? urls.get(i) : null;
+                    if (u == null) break;
+                    jpg = get(u, 3 * 1024 * 1024);
                 } catch (Exception e) {
                     Log.w(TAG, "picture " + i + " failed: " + e);
                     continue;
@@ -237,6 +243,41 @@ final class PlaceWallpapers {
         File[] files = d.listFiles();
         if (files != null) for (File f : files) f.delete();
         d.delete();
+    }
+
+    private static String pixabayKey(Context ctx) {
+        try {
+            File dir = Config.dir(ctx);
+            if (dir == null) return null;
+            File f = new File(dir, "pixabay.key");
+            if (!f.isFile()) return null;
+            String k = new String(java.nio.file.Files.readAllBytes(f.toPath()), "UTF-8").trim();
+            return k.matches("[0-9a-zA-Z-]{20,60}") ? k : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static java.util.List<String> pixabayUrls(String key) {
+        String[] topics = {"nature landscape", "building architecture", "scenery", "mosque"};
+        java.util.List<String> urls = new java.util.ArrayList<>();
+        java.util.Random rnd = new java.util.Random();
+        for (String q : topics) {
+            try {
+                byte[] b = get("https://pixabay.com/api/?key=" + key + "&q=" + java.net.URLEncoder.encode(q, "UTF-8")
+                        + "&image_type=photo&orientation=horizontal&min_width=1920&min_height=1080&safesearch=true"
+                        + "&per_page=20&page=" + (1 + rnd.nextInt(8)), 512 * 1024);
+                org.json.JSONArray hits = new org.json.JSONObject(new String(b, "UTF-8")).getJSONArray("hits");
+                for (int i = 0; i < hits.length() && i < 15; i++) {
+                    String u = hits.getJSONObject(i).optString("largeImageURL", "");
+                    if (u.startsWith("https://")) urls.add(u);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "pixabay " + q + " failed: " + e);
+            }
+        }
+        java.util.Collections.shuffle(urls);
+        return urls;
     }
 
     private static byte[] get(String url, int maxBytes) throws Exception {
