@@ -259,13 +259,13 @@ final class PlaceWallpapers {
     }
 
     private static java.util.List<String> pixabayUrls(String key) {
-        String[] topics = {"nature landscape", "building architecture", "scenery", "mosque"};
+        String[] topics = {"nature landscape", "mountain landscape", "forest scenery", "lake sunset", "beach ocean landscape"};
         java.util.List<String> urls = new java.util.ArrayList<>();
         java.util.Random rnd = new java.util.Random();
         for (String q : topics) {
             try {
                 byte[] b = get("https://pixabay.com/api/?key=" + key + "&q=" + java.net.URLEncoder.encode(q, "UTF-8")
-                        + "&image_type=photo&orientation=horizontal&min_width=1920&min_height=1080&safesearch=true"
+                        + "&category=nature&image_type=photo&orientation=horizontal&min_width=1920&min_height=1080&safesearch=true"
                         + "&per_page=20&page=" + (1 + rnd.nextInt(8)), 512 * 1024);
                 org.json.JSONArray hits = new org.json.JSONObject(new String(b, "UTF-8")).getJSONArray("hits");
                 for (int i = 0; i < hits.length() && i < 15; i++) {
