@@ -543,7 +543,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             wallView = new android.widget.ImageView(this);
             wallView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
             // Photos are bright: dim them so the clock, names and tiles stay readable.
-            if (placesMode) wallView.setColorFilter(0xFFC8C8C8, android.graphics.PorterDuff.Mode.MULTIPLY);
+            if (placesMode) wallView.setColorFilter(0xFF9A9A9A, android.graphics.PorterDuff.Mode.MULTIPLY);
             root.addView(wallView, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
         android.graphics.Bitmap old = wallBitmap;

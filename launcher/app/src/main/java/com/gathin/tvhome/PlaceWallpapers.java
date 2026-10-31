@@ -99,9 +99,7 @@ final class PlaceWallpapers {
             for (int i = 0; i < 80 && n < 50; i++) {
                 byte[] jpg;
                 try {
-                    String u = urls == null || urls.isEmpty()
-                            ? "https://picsum.photos/1920/1080?random=" + System.nanoTime()
-                            : i < urls.size() ? urls.get(i) : null;
+                    String u = (urls != null && i < urls.size()) ? urls.get(i) : null;
                     if (u == null) break;
                     jpg = get(u, 3 * 1024 * 1024);
                 } catch (Exception e) {
